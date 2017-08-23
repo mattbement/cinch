@@ -810,16 +810,16 @@ private:
 #define begin_turnstile(nway, enabled) do {                                    \
   int _nway = (nway), _baton;                                                  \
   if(enabled && clog_t::instance().initialized() &&                            \
-    clog_t::instance().rank() >= _nway) {                                      \
-    MPI_Recv(&_baton, 1, MPI_INT, clog_t::instance().rank()-_nway,             \
+    (clog_t::instance().rank() >= _nway)) {                                    \
+    MPI_Recv(&_baton, 1, MPI_INT, (clog_t::instance().rank()-_nway),           \
       42, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                                  \
   } /* if */                                                                   \
   do
 
 #define end_turnstile(enabled) while(0);                                       \
   if(enabled && clog_t::instance().initialized() &&                            \
-    clog_t::instance().rank() + _nway < clog_t::instance().size()) {           \
-    MPI_Send(&_baton, 1, MPI_INT, clog_t::instance().rank()+_nway,             \
+    (clog_t::instance().rank() + _nway) < clog_t::instance().size()) {         \
+    MPI_Send(&_baton, 1, MPI_INT, (clog_t::instance().rank()+_nway),           \
       42, MPI_COMM_WORLD);                                                     \
   } /* if */                                                                   \
 } while(0);
@@ -1066,7 +1066,7 @@ struct severity ## _log_message_t                                              \
   timestamp() << " " << rstrip<'/'>(file_) << ":" << line_
 
 #if !defined(CLOG_TURNSTILE_NWAY)
-#define CLOG_TURNSTILE_NWAY 1
+  #define CLOG_TURNSTILE_NWAY 1
 #endif
 
 // Trace
